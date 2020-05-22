@@ -1,0 +1,9 @@
+imageio==2.4.1
+ffmpeg==1.4
+matplotlib==2.2.3
+moviepy==0.2.3.5
+numpy==1.15.1
+opencv-python==3.4.3.18
+pyparsing==2.2.0
+scikit-image==0.14.2
+requests==2.21.0

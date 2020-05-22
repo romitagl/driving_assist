@@ -75,12 +75,25 @@ python main.py video ./Videos/LaneVideo.png
 
 Use the configuration parameter `scale_percent` to scale (down) the size of the input image and get better **performances**.
 
-### Quit
+#### Quit
 To quit from *video/directory* processing press the `esc` key and for *images/debug* mode press the `q` key.
 
-#### Instructions to run the code in a Docker container
+### Instructions to run the code in a Docker container
 
-I created a **docker container** that contains all the dependencies required to run the project. 
+#### Build the Docker image from the provided Dockerfile
+```bash
+# Create a new image tagged as `driving-assist:latest`
+make build_docker
+```
+
+To run, you can try the *lucky_spin* make target (requires the X Server on localhost:0.0):
+```bash
+# If everything is set properly, you should see the output of *./Images/TestImage.png* processing
+make lucky_spin
+```
+As every Software Developer would say: "It works on my machine!" :D
+
+#### Download a pre-made container that contains all the required dependencies to run the project. 
 
 1. Download the Docker container：[Dropbox link](https://www.dropbox.com/s/cw843kxthl1w5ax/docker_python_opencv.tar?dl=0)
 
@@ -89,7 +102,21 @@ I created a **docker container** that contains all the dependencies required to 
 docker load < ./docker_python_opencv.tar
 ```
 
-3. Use the following bash scripts to execute the container using the X Sever of your development machine:
+3. Customize the docker image name (your_docker_image_name), source folder (path_to_your_source_folder) and DISPLAY number(your_display_number), then execute the script to run the container:
+
+```bash
+xhost +
+sudo docker run --network host --rm -it -v $path_to_your_source_folder:/shared:Z -e DISPLAY=localhost:$your_display_number -v /tmp/.X11-unix/:/tmp/.X11-unix/:Z $your_docker_image_name bash
+```
+
+4. To save the container in case of changes (e.g. docker image called 'gl_docker.io4/python'):
+```bash
+docker save gl_docker.io4/python > docker_python_opencv.tar
+```
+
+#### X Server Configuration
+
+Run the following bash code to execute the container using the X Sever of your development machine:
 
 **Mac**
 *XQuartz depenency needed*. Procedure to setup XQuarz:
@@ -126,54 +153,9 @@ xterm -d localhost:0.0
 sudo xhost +
 ```
 
-Customize the docker image name (your_docker_image_name), source folder (path_to_your_source_folder) and DISPLAY number(your_display_number), then execute the script to run the container:
+#### *Python packages present in the container*
 
-```bash
-xhost +
-sudo docker run --network host --rm -it -v $path_to_your_source_folder:/shared:Z -e DISPLAY=localhost:$your_display_number -v /tmp/.X11-unix/:/tmp/.X11-unix/:Z $your_docker_image_name bash
-```
-
-4. To save the container in case of changes (e.g. docker image called 'gl_docker.io4/python'):
-```bash
-docker save gl_docker.io4/python > docker_python_opencv.tar
-```
-
-##### *Python packages list present in the container*
-```text
-Package         Version   
---------------- ----------
-certifi         2018.11.29
-chardet         3.0.4     
-cloudpickle     0.8.0     
-configparser    3.7.3     
-cycler          0.10.0    
-dask            1.1.1     
-decorator       4.3.2     
-idna            2.8       
-imageio         2.4.1     
-imageio-ffmpeg  0.2.0     
-kiwisolver      1.0.1     
-matplotlib      2.2.3     
-moviepy         0.2.3.5   
-networkx        2.2       
-numpy           1.15.1    
-opencv-python   3.4.3.18  
-Pillow          5.4.1     
-pip             18.0      
-pyparsing       2.2.0     
-python-dateutil 2.7.3     
-pytz            2018.5    
-PyWavelets      1.0.1     
-requests        2.21.0    
-scikit-image    0.14.2    
-scipy           1.2.1     
-setuptools      40.2.0    
-six             1.11.0    
-toolz           0.9.0     
-tqdm            4.31.0    
-urllib3         1.24.1    
-wheel           0.31.1  
-```
+Dependencies are listed in the [dependencies](./dependencies.txt) file.
 
 #### Utility functions
 
